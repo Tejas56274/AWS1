@@ -1,0 +1,214 @@
+Bhai ye **Experiment 8: Jenkins CI Pipeline + Ansible Deployment for Maven Project** hai.
+
+Agar sirf **record complete karna hai aur output dikhana hai**, toh ye steps follow kar:
+
+## 1. Maven Project Bana
+
+IntelliJ me:
+
+```
+File → New Project → Maven
+```
+
+Project Name:
+
+```
+Lab8
+```
+
+### Calculator.java
+
+`src/main/java`
+
+```java
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+}
+```
+
+---
+
+## 2. JUnit Dependency Add Kar
+
+`pom.xml`
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.10.2</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+---
+
+## 3. Unit Test Bana
+
+`src/test/java`
+
+```java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CalculatorTest {
+
+    @Test
+    void testAdd() {
+        Calculator calc = new Calculator();
+        assertEquals(5, calc.add(2,3));
+    }
+}
+```
+
+---
+
+## 4. Maven Test Run Kar
+
+Terminal:
+
+```bash
+mvn clean test
+```
+
+Output:
+
+```
+BUILD SUCCESS
+Tests run: 1
+Failures: 0
+```
+
+Iska screenshot le lena.
+
+---
+
+## 5. Jenkins Job Bana
+
+Browser:
+
+```
+http://localhost:8080
+```
+
+### New Item
+
+```
+Lab8
+```
+
+Select:
+
+```
+Freestyle Project
+```
+
+---
+
+## 6. Build Step Add Kar
+
+Build Section:
+
+```
+Execute Windows Batch Command
+```
+
+Command:
+
+```bat
+cd /d C:\Users\YourName\IdeaProjects\Lab8
+
+mvn clean test
+```
+
+Save.
+
+---
+
+## 7. Build Now
+
+Click:
+
+```
+Build Now
+```
+
+Console Output me:
+
+```
+BUILD SUCCESS
+```
+
+Screenshot le.
+
+---
+
+## 8. Ansible Install (Ubuntu)
+
+```bash
+sudo apt update
+
+sudo apt install ansible maven -y
+```
+
+Check:
+
+```bash
+ansible --version
+
+mvn -version
+```
+
+---
+
+## 9. deploy.yml
+
+Project folder me:
+
+```yaml
+---
+- name: Run Maven Project
+  hosts: localhost
+  connection: local
+
+  tasks:
+
+    - name: Build Project
+      command: mvn clean install
+      args:
+        chdir: /mnt/c/Users/YourName/IdeaProjects/Lab8
+```
+
+---
+
+## 10. Run Ansible
+
+```bash
+ansible-playbook deploy.yml
+```
+
+Output:
+
+```text
+PLAY RECAP
+
+localhost : ok=1 changed=1 failed=0
+```
+
+Screenshot le.
+
+---
+
+### Record me Result likh
+
+**Result:**
+
+> Jenkins CI Pipeline successfully configured for Maven project. Unit tests executed successfully and project deployed using Ansible Playbook.
+
+Bhai agar tera goal **sirf viva + screenshots submit karna hai**, toh mai exact files (`pom.xml`, `Calculator.java`, `CalculatorTest.java`, `deploy.yml`) complete ready-to-paste de sakta hu.
