@@ -1,0 +1,206 @@
+Bhai ye **Experiment 8: Jenkins CI Pipeline & Ansible Deployment for Maven Project** hai.
+
+Ye asal me Experiment 6 (Jenkins + Maven) aur Experiment 7 (Ansible) ka combination hai.
+
+## Step 1: Maven Project
+
+Wahi Calculator project use kar.
+
+`Calculator.java`
+
+```java
+public class Calculator {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
+```
+
+---
+
+## Step 2: JUnit Dependency
+
+`pom.xml`
+
+```xml
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>5.10.2</version>
+    <scope>test</scope>
+</dependency>
+```
+
+---
+
+## Step 3: Calculator Test
+
+`src/test/java/CalculatorTest.java`
+
+```java
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class CalculatorTest {
+
+    @Test
+    void testAdd() {
+        Calculator calc = new Calculator();
+        assertEquals(5, calc.add(2,3));
+    }
+}
+```
+
+---
+
+## Step 4: Selenium Dependency
+
+Image me Selenium bhi likha hai.
+
+`pom.xml` me add kar:
+
+```xml
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>4.22.0</version>
+</dependency>
+```
+
+---
+
+## Step 5: GoogleTest.java
+
+`src/test/java/GoogleTest.java`
+
+```java
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class GoogleTest {
+
+    @Test
+    public void openGoogle() {
+
+        WebDriver driver = new ChromeDriver();
+
+        driver.get("https://www.google.com");
+
+        System.out.println(driver.getTitle());
+
+        driver.quit();
+    }
+}
+```
+
+⚠️ Agar Selenium chalane me dikkat aaye to is step ko skip bhi kar sakte ho practical ke liye.
+
+---
+
+## Step 6: Build Check
+
+Terminal:
+
+```bash
+mvn clean package
+```
+
+Expected:
+
+```text
+BUILD SUCCESS
+```
+
+---
+
+## Step 7: Jenkins Job
+
+Tu already Jenkins setup kar chuka hai.
+
+Build Step:
+
+```bat
+cd /d "C:\Users\tejas\IdeaProjects\Experiment 100"
+mvn clean package
+```
+
+Ya
+
+```bat
+mvn clean test
+```
+
+Build Now →
+
+```text
+BUILD SUCCESS
+```
+
+---
+
+## Step 8: Ansible Deployment
+
+WSL Ubuntu:
+
+Create Playbook
+
+`deploy.yml`
+
+```yaml
+---
+- name: Deploy Maven Artifact
+  hosts: localhost
+
+  tasks:
+
+    - name: Create Deploy Folder
+      file:
+        path: /tmp/deploy
+        state: directory
+
+    - name: Copy Jar File
+      copy:
+        src: /mnt/c/Users/tejas/IdeaProjects/Experiment100/target/Experiment100-1.0-SNAPSHOT.jar
+        dest: /tmp/deploy/
+```
+
+Run:
+
+```bash
+ansible-playbook deploy.yml
+```
+
+---
+
+## Screenshots for Record
+
+1. Calculator.java
+2. pom.xml dependencies
+3. CalculatorTest.java
+4. `mvn clean package` → BUILD SUCCESS
+5. Jenkins Console Output → SUCCESS
+6. `ansible-playbook deploy.yml` output
+
+---
+
+### Viva
+
+**What is CI?**
+Continuous Integration.
+
+**Why Jenkins?**
+Automate build and testing.
+
+**Why Maven?**
+Dependency and build management.
+
+**Why Ansible?**
+Configuration management and deployment automation.
+
+**Artifact kya hai?**
+Maven build ke baad generate hui `.jar` file.
+
+Ye experiment basically:
+**Maven Build → Jenkins CI → Ansible Deployment** pipeline dikhata hai. 🔥
