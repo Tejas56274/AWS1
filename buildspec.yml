@@ -4,11 +4,18 @@ phases:
   install:
     runtime-versions:
       java: corretto21
-
+    commands:
+      - echo "Installing Maven dependencies"
+      - mvn -B dependency:go-offline
   build:
     commands:
+      - echo "Building the project"
       - mvn clean package
 
 artifacts:
   files:
     - target/*.jar
+
+cache:
+  paths:
+    - '/root/.m2/**/*'
