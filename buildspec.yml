@@ -1,14 +1,15 @@
 version: 0.2
 
+# Build specification for AWS CodeBuild
 phases:
   install:
     runtime-versions:
-      java: corretto21
+      java: corretto21  # Use Amazon Corretto 21 JDK
 
   build:
     commands:
-      - mvn clean package
+      - mvn clean package  # Compile and package the application into a JAR
 
 artifacts:
   files:
-    - target/*.jar
+    - target/*.jar  # Export the generated JAR as the build artifact
